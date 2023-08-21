@@ -1,8 +1,16 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import "./App.css"
 
 const StatisticLine = ({ value, text }) => {
   return (
-    <p> {text} {value}</p>
+    <table class="table">
+      <tbody>
+        <tr>
+          <td className="text">{text}</td>
+          <td>{value}</td>
+        </tr>
+      </tbody>
+    </table>
   );
 }
 
