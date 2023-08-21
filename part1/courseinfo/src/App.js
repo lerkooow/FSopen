@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from '../../anecdotes/node_modules/@types/react';
 import "./App.css"
 
 const StatisticLine = ({ value, text }) => {
