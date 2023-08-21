@@ -5,6 +5,7 @@ const Course = ({ course }) => {
       {course.parts.map(value =>
         <Part key={value.id} value={value} />
       )}
+      <Total course={course} />
     </div>
   )
 }
@@ -20,6 +21,13 @@ const Part = ({ value }) => {
     <p>{value.name} {value.exercises}</p>
   )
 }
+
+const Total = ({ course }) => {
+  const totalExercises = course.parts.reduce((accumulator, currentValue) =>
+    accumulator + currentValue.exercises, 0);
+  return <strong><p>total of {totalExercises} exercises</p></strong>;
+};
+
 
 const App = () => {
   const course = {
@@ -40,6 +48,11 @@ const App = () => {
         name: 'State of a component',
         exercises: 14,
         id: 3
+      },
+      {
+        name: 'Redux',
+        exercises: 11,
+        id: 4
       }
     ]
   }
