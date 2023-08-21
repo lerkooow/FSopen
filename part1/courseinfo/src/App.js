@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
-const Statistics = ({ score, text }) => {
+const Statistics = ({ value, text }) => {
   return (
-    <p> {text} {text === "positive" ? `${score}%` : score}</p>
+    <p> {text} {text === "positive" ? `${value}%` : value}</p>
   );
 }
 
@@ -22,6 +22,8 @@ const App = () => {
     setBad(bad + 1)
   }
 
+  const totalFeedback = good + neutral + bad;
+
   return (
     <div>
       <h2>give feetback</h2>
@@ -32,13 +34,18 @@ const App = () => {
 
       <h2>statistic</h2>
 
-      <Statistics text={"good"} score={good} />
-      <Statistics text={"neutral"} score={neutral} />
-      <Statistics text={"bad"} score={bad} />
-      <Statistics text={"all"} score={good + neutral + bad} />
-      <Statistics text={"average"} score={good + neutral + bad === 0 ? 0 : (good - bad) / (good + neutral + bad)} />
-      <Statistics text={"positive"} score={good + neutral + bad === 0 ? 0 : (good / (good + neutral + bad) * 100)} />
-
+      {totalFeedback === 0 ? (
+        <h2>No feedback given</h2>
+      ) : (
+        <>
+          <Statistics text={"good"} value={good} />
+          <Statistics text={"neutral"} value={neutral} />
+          <Statistics text={"bad"} value={bad} />
+          <Statistics text={"all"} value={good + neutral + bad} />
+          <Statistics text={"average"} value={good + neutral + bad === 0 ? 0 : (good - bad) / (good + neutral + bad)} />
+          <Statistics text={"positive"} value={good + neutral + bad === 0 ? 0 : (good / (good + neutral + bad) * 100)} />
+        </>
+      )}
     </div>
   )
 }
