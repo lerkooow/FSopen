@@ -1,8 +1,37 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
-const Statistics = ({ value, text }) => {
+const StatisticLine = ({ value, text }) => {
   return (
-    <p> {text} {text === "positive" ? `${value}%` : value}</p>
+    <p> {text} {value}</p>
+  );
+}
+
+const Statistics = ({ good, neutral, bad }) => {
+  const totalFeedback = good + neutral + bad;
+
+  return (
+    <div>
+      {
+        totalFeedback === 0 ? (
+          <h2>No feedback given</h2>
+        ) : (
+          <>
+            <StatisticLine text="good" value={good} />
+            <StatisticLine text="neutral" value={neutral} />
+            <StatisticLine text="bad" value={bad} />
+            <StatisticLine text="all" value={totalFeedback} />
+            <StatisticLine text="average" value={(good - bad) / totalFeedback} />
+            <StatisticLine text="positive" value={`${(good / totalFeedback) * 100}%`} />
+          </>
+        )
+      }
+    </div>
+  );
+}
+
+const Button = ({ onClick, text }) => {
+  return (
+    <button onClick={onClick}> {text} </button>
   );
 }
 
@@ -22,32 +51,19 @@ const App = () => {
     setBad(bad + 1)
   }
 
-  const totalFeedback = good + neutral + bad;
-
   return (
     <div>
-      <h2>give feetback</h2>
+      <h2>give feedback</h2>
 
-      <button onClick={handleGoodClick}>good</button>
-      <button onClick={handleNeutralClick}>neutral</button>
-      <button onClick={handleBadClick}>bad</button>
+      <Button text="good" onClick={handleGoodClick} />
+      <Button text="neutral" onClick={handleNeutralClick} />
+      <Button text="bad" onClick={handleBadClick} />
 
       <h2>statistic</h2>
 
-      {totalFeedback === 0 ? (
-        <h2>No feedback given</h2>
-      ) : (
-        <>
-          <Statistics text={"good"} value={good} />
-          <Statistics text={"neutral"} value={neutral} />
-          <Statistics text={"bad"} value={bad} />
-          <Statistics text={"all"} value={good + neutral + bad} />
-          <Statistics text={"average"} value={good + neutral + bad === 0 ? 0 : (good - bad) / (good + neutral + bad)} />
-          <Statistics text={"positive"} value={good + neutral + bad === 0 ? 0 : (good / (good + neutral + bad) * 100)} />
-        </>
-      )}
+      <Statistics good={good} neutral={neutral} bad={bad} />
     </div>
   )
 }
 
-export default App
+export default App;
