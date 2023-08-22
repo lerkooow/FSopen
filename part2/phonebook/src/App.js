@@ -22,7 +22,7 @@ const Persons = ({ filteredPersons, detelePerson }) => {
       {filteredPersons.map(person => (
         <div className="persons" key={person.id}>
           <p>{person.name} {person.number}</p>
-          <button onClick={() => detelePerson(person)}>detele</button>
+          <button onClick={() => detelePerson(person)}>delete</button>
         </div>
       ))}
     </div>
@@ -91,12 +91,11 @@ const App = () => {
           })
           .catch(error => {
             setErrorMessage(
-              `'${persons.name}' was already deleted from server`
+              `Information of ${newName} has already been removed from server`
             )
             setTimeout(() => {
               setErrorMessage(null)
             }, 5000);
-            setPersons(persons.filter(person => person.name === newName))
           })
       }
     } else { // Если такого человека не существует в базе, то мы
@@ -148,11 +147,12 @@ const App = () => {
         })
         .catch(error => {
           setErrorMessage(
-            `'${persons.name}' was already deleted from server`
+            `"${person.name}" was already deleted from server`
           );
           setTimeout(() => {
             setErrorMessage(null)
           }, 5000);
+          setPersons(prevState => prevState.filter(el => el.id !== person.id));
         });
     }
   };

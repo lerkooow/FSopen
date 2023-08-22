@@ -19,17 +19,20 @@ p {
 .good {
     border: 6px solid green;
     color: green;
-    background-color: rgba(128, 128, 128, 0.378);
-    font-size: 60px;
+    background-color: rgba(128, 128, 128, 0.227);
+    font-size: 40px;
     padding-left: 10px;
     margin-bottom: 20px;
+    border-radius: 10px;
 }
 
 .error {
     border: 6px solid red;
     color: red;
-    background-color: rgba(128, 128, 128, 0.378);
-    font-size: 60px;
+    background-color: rgba(128, 128, 128, 0.227);
+    font-size: 40px;
     padding-left: 10px;
     margin-bottom: 20px;
+    border-radius: 10px;
+
 }
