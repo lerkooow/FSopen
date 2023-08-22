@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import personService from './services/persons'
+import "./App.css"
 
 
 const Filter = ({ filter, handleFilterChange }) => {
@@ -17,11 +18,14 @@ const PersonForm = ({ newName, newNumber, handleNameChange, handleNumberChange }
   )
 }
 
-const Persons = ({ filteredPersons }) => {
+const Persons = ({ filteredPersons, removePerson }) => {
   return (
     <div>
       {filteredPersons.map(person => (
-        <p key={person.id}>{person.name} {person.number}</p>
+        <div className="persons" key={person.id}>
+          <p>{person.name} {person.number}</p>
+          <button onClick={() => removePerson(person)}>detele</button>
+        </div>
       ))}
     </div>
   )
@@ -94,6 +98,17 @@ const App = () => {
     person.name.toLowerCase().includes(filter.toLowerCase())
   );
 
+  const removePerson = (person) => {
+    const shouldDelete = window.confirm(`Delete ${person.name}?`);
+    if (shouldDelete) {
+      personService
+        .deletePerson(person.id)
+        .then(() => {
+          setPersons(prevState => prevState.filter(el => el.id !== person.id));
+        })
+    }
+  };
+
 
   return (
     <div>
@@ -109,7 +124,7 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-      <Persons filteredPersons={filteredPersons} />
+      <Persons filteredPersons={filteredPersons} removePerson={removePerson} />
     </div>
   );
 };

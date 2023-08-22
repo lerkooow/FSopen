@@ -1,0 +1,17 @@
+.persons {
+    display: flex;
+    gap: 5px;
+    align-items: center
+}
+
+button {
+    height: 30px;
+}
+
+button:hover {
+    background-color: rgba(26, 83, 140, 0.605);
+}
+
+p {
+    margin: 10px;
+}
