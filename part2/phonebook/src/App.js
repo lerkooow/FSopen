@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import personService from './services/persons'
-import "./App.css"
-
 
 const Filter = ({ filter, handleFilterChange }) => {
   return (
@@ -18,13 +16,13 @@ const PersonForm = ({ newName, newNumber, handleNameChange, handleNumberChange }
   )
 }
 
-const Persons = ({ filteredPersons, removePerson }) => {
+const Persons = ({ filteredPersons, detelePerson }) => {
   return (
     <div>
       {filteredPersons.map(person => (
         <div className="persons" key={person.id}>
           <p>{person.name} {person.number}</p>
-          <button onClick={() => removePerson(person)}>detele</button>
+          <button onClick={() => detelePerson(person)}>detele</button>
         </div>
       ))}
     </div>
@@ -37,6 +35,8 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filter, setFilter] = useState('');
+  const [goodMessage, setGoodMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("")
 
   //  Get Server Data
   useEffect(() => {
@@ -84,12 +84,19 @@ const App = () => {
             setPersons(persons.map(person => person.id === returnedPerson.id ? returnedPerson : person));
             setNewName('');
             setNewNumber('');
+            setGoodMessage(`Update number ${newName}`)
+            setTimeout(() => {
+              setGoodMessage(null)
+            }, 5000);
           })
           .catch(error => {
-            alert(
+            setErrorMessage(
               `'${persons.name}' was already deleted from server`
             )
-            setPersons(persons.filter(person => person.name === newName), error)
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000);
+            setPersons(persons.filter(person => person.name === newName))
           })
       }
     } else { // Если такого человека не существует в базе, то мы
@@ -104,9 +111,16 @@ const App = () => {
           setPersons([...persons, returnedPerson]);
           setNewName('');
           setNewNumber('');
+          setGoodMessage(`Added ${newName}`)
+          setTimeout(() => {
+            setGoodMessage(null)
+          }, 5000);
         })
         .catch(error => {
-          alert('Error creating person:', error);
+          setErrorMessage("Error creating person")
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000);
         });
     }
   };
@@ -133,15 +147,20 @@ const App = () => {
           setPersons(prevState => prevState.filter(el => el.id !== person.id));
         })
         .catch(error => {
-          alert('Error deleting person:', error);
+          setErrorMessage(
+            `'${persons.name}' was already deleted from server`
+          );
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000);
         });
     }
   };
 
-
   return (
     <div>
       <h2>Phonebook</h2>
+      {goodMessage ? <div className="good">{goodMessage}</div> : errorMessage ? <div className="error">{errorMessage}</div> : null}
       <Filter filter={filter} handleFilterChange={handleFilterChange} />
       <form onSubmit={addNameNumber}>
         <div>
