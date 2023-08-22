@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from "axios";
+import personService from './services/persons'
 
 
 const Filter = ({ filter, handleFilterChange }) => {
@@ -34,6 +34,15 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('');
   const [filter, setFilter] = useState('');
 
+  // Server data
+  useEffect(() => {
+    personService
+      .getAll()
+      .then(initialNotes => {
+        setPersons(initialNotes)
+      })
+  }, [])
+
   // Name
 
   const handleNameChange = (e) => {
@@ -66,14 +75,12 @@ const App = () => {
       id: persons.length + 1
     };
 
-    setPersons(persons.concat(nameObject));
-    setNewName('');
-    setNewNumber('');
-
-    axios
-      .post('http://localhost:3001/persons', nameObject)
-      .then(response => {
-        console.log(response);
+    personService
+      .create(nameObject)
+      .then(returnedPerson => {
+        setPersons(persons.concat(returnedPerson))
+        setNewName('');
+        setNewNumber('');
       })
   };
 
@@ -86,14 +93,6 @@ const App = () => {
   const filteredPersons = persons.filter(person =>
     person.name.toLowerCase().includes(filter.toLowerCase())
   );
-
-  useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
-      })
-  }, [])
 
 
   return (
