@@ -46,7 +46,7 @@ const App = () => {
     setNewNumber(e.target.value);
   };
 
-  // Add Name and Number 
+  // Add Name and Number
   const addNameNumber = (e) => {
     e.preventDefault();
 
@@ -69,6 +69,12 @@ const App = () => {
     setPersons(persons.concat(nameObject));
     setNewName('');
     setNewNumber('');
+
+    axios
+      .post('http://localhost:3001/persons', nameObject)
+      .then(response => {
+        console.log(response);
+      })
   };
 
   // Filter
@@ -82,11 +88,9 @@ const App = () => {
   );
 
   useEffect(() => {
-    console.log('effect')
     axios
       .get('http://localhost:3001/persons')
       .then(response => {
-        console.log('promise fulfilled')
         setPersons(response.data)
       })
   }, [])
