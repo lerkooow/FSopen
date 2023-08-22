@@ -38,12 +38,15 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('');
   const [filter, setFilter] = useState('');
 
-  // Server data
+  //  Get Server Data
   useEffect(() => {
     personService
       .getAll()
       .then(initialNotes => {
         setPersons(initialNotes)
+      })
+      .catch(error => {
+        console.log('fail', error)
       })
   }, [])
 
@@ -68,24 +71,44 @@ const App = () => {
       return;
     }
 
-    if (persons.some(person => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`);
-      return;
+    const existingPerson = persons.find(person => person.name === newName);
+    if (existingPerson) { // Если человек уже существует в базе:
+      const numberReplace = window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`);
+      // Ели пользователь согласен заменить номер существующего в базе данных человека, то:
+      if (numberReplace) {
+        const changedPerson = { ...existingPerson, number: newNumber }; // Мы копируем исходный массив с изменением номера телефона
+        personService
+          // Replace Server Data
+          .replace(existingPerson.id, changedPerson) // Отправляем изменения на сервер, проверяя при этом совпадает ли id и сбрасываем поля ввода
+          .then(returnedPerson => {
+            setPersons(persons.map(person => person.id === returnedPerson.id ? returnedPerson : person));
+            setNewName('');
+            setNewNumber('');
+          })
+          .catch(error => {
+            alert(
+              `'${persons.name}' was already deleted from server`
+            )
+            setPersons(persons.filter(person => person.name === newName), error)
+          })
+      }
+    } else { // Если такого человека не существует в базе, то мы
+      const newPerson = { // Создане объект с новым человеком, куда записываем имя и номер телефона
+        name: newName,
+        number: newNumber
+      };
+      // Create Server Data
+      personService // Отправляем данные на сервер изменяя уже существующий массив объектов
+        .create(newPerson)
+        .then(returnedPerson => {
+          setPersons([...persons, returnedPerson]);
+          setNewName('');
+          setNewNumber('');
+        })
+        .catch(error => {
+          alert('Error creating person:', error);
+        });
     }
-
-    const nameObject = {
-      name: newName,
-      number: newNumber,
-      id: persons.length + 1
-    };
-
-    personService
-      .create(nameObject)
-      .then(returnedPerson => {
-        setPersons(persons.concat(returnedPerson))
-        setNewName('');
-        setNewNumber('');
-      })
   };
 
   // Filter
@@ -98,14 +121,20 @@ const App = () => {
     person.name.toLowerCase().includes(filter.toLowerCase())
   );
 
-  const removePerson = (person) => {
+  // Delete persons
+
+  const detelePerson = (person) => {
     const shouldDelete = window.confirm(`Delete ${person.name}?`);
     if (shouldDelete) {
       personService
-        .deletePerson(person.id)
+        // Delete Server Data
+        .remove(person.id)
         .then(() => {
           setPersons(prevState => prevState.filter(el => el.id !== person.id));
         })
+        .catch(error => {
+          alert('Error deleting person:', error);
+        });
     }
   };
 
@@ -124,7 +153,7 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-      <Persons filteredPersons={filteredPersons} removePerson={removePerson} />
+      <Persons filteredPersons={filteredPersons} detelePerson={detelePerson} />
     </div>
   );
 };
