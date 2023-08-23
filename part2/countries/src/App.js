@@ -4,25 +4,29 @@ import axios from 'axios';
 const App = () => {
   const [value, setValue] = useState("");
   const [info, setInfo] = useState([]);
+  const [expandedCountry, setExpandedCountry] = useState(null);
 
   useEffect(() => {
     if (value.length > 0) {
-      console.log('fetching country info...');
       axios
         .get(`https://restcountries.com/v3.1/name/${value}`)
         .then(response => {
           setInfo(response.data);
         })
         .catch(error => {
-          console.error('Error fetching country info:', error);
-          setInfo([]);
-        });
+          console.log("Not found")
+        })
     }
   }, [value]);
+
 
   const handleChange = (e) => {
     const newValue = e.target.value;
     setValue(newValue);
+  };
+
+  const handleShowClick = (countryName) => {
+    setExpandedCountry(countryName === expandedCountry ? null : countryName);
   };
 
   const filteredCountries = info.filter(country =>
@@ -31,42 +35,44 @@ const App = () => {
 
   return (
     <div>
-      <div>
+      <div className="find">
         <p>Find countries</p>
         <input value={value} onChange={handleChange} />
       </div>
-      <div>
-        {filteredCountries.length === 1 ? (
+      {value !== "" && <div>
+        {filteredCountries.length > 10 ? (
+          <p>Too many matches, specify another filter</p>
+        ) : (
           filteredCountries.map((country) => (
-            <div className="information">
-              <h1>{country.name.common}</h1>
-              <p>capital {country.capital}</p>
-              <p>area {country.area}</p>
-              <p>
-                <ul>
-                  {filteredCountries.map(country => (
-                    <p key={country.name.common}>
+            <div className="country" key={country.name.common}>
+              {(filteredCountries.length < 10 && filteredCountries.length !== 1) &&
+                <div className="show">
+                  <p>{country.name.common}</p>
+                  <button onClick={() => handleShowClick(country.name.common)}>
+                    {expandedCountry === country.name.common ? "hide" : "show"}
+                  </button>
+                </div>}
+              {(expandedCountry === country.name.common || filteredCountries.length === 1) && (
+                <div className="information">
+                  <h1>{country.name.common}</h1>
+                  <p>capital {country.capital}</p>
+                  <p>area {country.area}</p>
+                  <p>
+                    <strong>languages:</strong>
+                    <ul>
                       {Object.values(country.languages).map((language, index) => (
                         <li key={index}>{language}</li>
                       ))}
-                    </p>
-                  ))}
-                </ul>
-              </p>
-              <p>{country.flag}</p>
+                    </ul>
+                  </p>
+                  <img src={country.flags.png} alt={`${country.name.common} flag`} />
+                </div>
+              )}
             </div>
           ))
-        ) : (
-          filteredCountries.length > 10 ? (
-            <p>Too many matches, specify another filter</p>
-          ) : (
-            filteredCountries.map((country) => (
-              <p key={country.name.common}>{country.name.common}</p>
-            ))
-          )
         )}
-      </div>
-    </div >
+      </div>}
+    </div>
   );
 };
 
