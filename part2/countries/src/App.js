@@ -7,7 +7,7 @@ const App = () => {
   const [value, setValue] = useState("");
   const [info, setInfo] = useState([]);
   const [expandedCountry, setExpandedCountry] = useState(null);
-  const [error, setError] = useState(null); // Состояние для отслеживания ошибки
+
 
   useEffect(() => {
     if (value.length > 0) {
@@ -17,7 +17,7 @@ const App = () => {
           setInfo(response.data);
         })
         .catch(error => {
-          setError("Not found country");
+          console.log("Not found country");
         })
     }
   }, [value]);
@@ -41,7 +41,7 @@ const App = () => {
         <p>Find countries</p>
         <input value={value} onChange={handleChange} />
       </div>
-      <Information expandedCountry={expandedCountry} handleShowClick={handleShowClick} filteredCountries={filteredCountries} value={value} error={error} />
+      <Information expandedCountry={expandedCountry} handleShowClick={handleShowClick} filteredCountries={filteredCountries} value={value} />
     </div>
   );
 };
