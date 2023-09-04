@@ -19,16 +19,39 @@ morgan.token('ms', (req, res) => {
     }
 });
 
+// let persons = [
+//     {
+//         "id": 1,
+//         "name": "Arto Hellas",
+//         "number": "040-123456"
+//     },
+//     {
+//         "id": 2,
+//         "name": "Ada Lovelace",
+//         "number": "39-44-5323523"
+//     },
+//     {
+//         "id": 3,
+//         "name": "Dan Abramov",
+//         "number": "12-43-234345"
+//     },
+//     {
+//         "id": 4,
+//         "name": "Mary Poppendieck",
+//         "number": "39-23-6423122"
+//     }
+// ]
 
 // GET info
+
 app.get('/info', (request, response) => {
     res.json(newPerson)
 })
 
 // GET persons
 app.get("/api/persons", (req, res) => {
-    Person.find({}).then((persons) => {
-        res.json(persons)
+    Person.find({}).then((people) => {
+        res.json(people)
     })
 })
 
@@ -63,6 +86,12 @@ const generateId = () => {
 app.post('/api/persons', (request, response) => {
     const body = request.body;
 
+    const person = {
+        id: generateId(),
+        name: body.name,
+        number: body.number,
+    };
+
     if (!body.name || !body.number) {
         return response.status(400).json({
             error: 'Name or number missing'
@@ -73,14 +102,9 @@ app.post('/api/persons', (request, response) => {
         })
     }
 
-    const person = new Person({
-        name: body.name,
-        number: body.number,
-    })
+    persons = persons.concat(person);
 
-    person.save().then((savedPerson) => {
-        res.json(savedPerson)
-    })
+    response.json(person);
 });
 
 
