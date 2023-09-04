@@ -19,33 +19,7 @@ morgan.token('ms', (req, res) => {
     }
 });
 
-// let persons = [
-//     {
-//         name: "Arto Hellas",
-//         number: "040-123456",
-//         id: 1,
-//     },
-//     {
-//         name: "Ada Lovelace",
-//         number: "39-44-5323523",
-//         id: 2,
-//     },
-//     {
-//         name: "Dan Abramov",
-//         number: "12-43-234345",
-//         id: 3,
-//     },
-//     {
-//         name: "Mary Poppendieck",
-//         number: "39-23-6423122",
-//         id: 4,
-//     },
-//     {
-//         name: "Edward Tivruski",
-//         number: "021-2142142142",
-//         id: 5,
-//     },
-// ]
+let persons = [];
 
 
 // GET info
@@ -74,13 +48,12 @@ app.get('/api/persons/:id', (req, res) => {
 
 // DELETE
 app.delete('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    persons = persons.filter(person => person.id !== id)
-
-    response.status(204).end()
+    Person.findByIdAndRemove(req.params.id)
+        .then(result => {
+            res.status(204).end()
+        })
+        .catch(error => console.log(error))
 })
-
-
 
 // POST
 app.post('/api/persons', (req, res) => {
@@ -105,6 +78,13 @@ app.post('/api/persons', (req, res) => {
         res.json(savedPerson)
     })
 });
+
+
+const unknownEndpoint = (req, res) => {
+    res.status(404).send({ error: "unknown endpoint" })
+}
+
+app.use(unknownEndpoint)
 
 
 const PORT = process.env.PORT
