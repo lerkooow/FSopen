@@ -77,9 +77,6 @@ const App = () => {
       return;
     } else if (!/^\d{2,3}-\d{5,20}$/.test(newNumber)) {
       setErrorMessage(`The number entered is incorrect, valid options are (8 characters or more, format xx-xxxxxxx... or xxx-xxxxx...)`);
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000);
       return;
     }
 
