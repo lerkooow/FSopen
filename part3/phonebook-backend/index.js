@@ -24,7 +24,8 @@ let persons = [];
 
 // GET info
 app.get('/info', (req, res) => {
-    res.json(newPerson)
+    const date = new Date()
+    res.send(`<p>Phonebook has info for ${persons.length} people</p> <p>${date}</p>`)
 })
 
 // GET persons
@@ -35,7 +36,7 @@ app.get("/api/persons", (req, res) => {
 })
 
 // GET persons id с ошибкой, если индекс не найден
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res, next) => {
     const id = Number(req.params.id)
     const person = persons.find(person => person.id === id)
 
@@ -47,12 +48,12 @@ app.get('/api/persons/:id', (req, res) => {
 })
 
 // DELETE
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res, next) => {
     Person.findByIdAndRemove(req.params.id)
         .then(result => {
             res.status(204).end()
         })
-        .catch(error => console.log(error))
+        .catch(error => next(error))
 })
 
 // POST
@@ -85,6 +86,18 @@ const unknownEndpoint = (req, res) => {
 }
 
 app.use(unknownEndpoint)
+
+const errorHandler = (error, req, res, next) => {
+    console.error(error.message)
+
+    if (error.name === "CastError") {
+        return res.status(400).send({ error: "malformatted id" })
+    }
+
+    next(error)
+}
+
+app.use(errorHandler)
 
 
 const PORT = process.env.PORT
