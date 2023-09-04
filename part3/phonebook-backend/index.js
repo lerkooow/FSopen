@@ -21,7 +21,6 @@ morgan.token('ms', (req, res) => {
 
 let persons = [];
 
-
 // GET info
 app.get("/info", (req, res, error) => {
     const requestTime = new Date(Date.now())
@@ -65,7 +64,7 @@ app.delete('/api/persons/:id', (req, res, next) => {
 })
 
 // POST
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
     const body = req.body;
 
     if (!body.name || !body.number) {
@@ -83,9 +82,11 @@ app.post('/api/persons', (req, res) => {
         number: body.number,
     })
 
-    person.save().then((savedPerson) => {
-        res.json(savedPerson)
-    })
+    person
+        .save()
+        .then((savedPerson) => savedPerson.toJSON())
+        .then((savedAndFormattedPerson) => res.json(savedAndFormattedPerson))
+        .catch((error) => next(error))
 });
 
 
@@ -106,7 +107,6 @@ app.put("/api/persons/:id", (req, res, next) => {
         .catch((error) => next(error))
 })
 
-
 const unknownEndpoint = (req, res) => {
     res.status(404).send({ error: "unknown endpoint" })
 }
@@ -118,13 +118,12 @@ const errorHandler = (error, req, res, next) => {
 
     if (error.name === "CastError") {
         return res.status(400).send({ error: "malformatted id" })
+    } else if (error.name === "ValidationError") {
+        return res.status(400).json({ error: error.message })
     }
 
     next(error)
 }
-
-app.use(errorHandler)
-
 
 const PORT = process.env.PORT
 

@@ -69,6 +69,9 @@ const App = () => {
     if (!newName || !newNumber) {
       alert("Please enter both name and number");
       return;
+    } else if (newName.length < 3) {
+      setErrorMessage(`Person validation failed: name: Path "name" ("${newName}") is shorter than the minimum allowed length (3)`);
+      return;
     }
 
     const existingPerson = persons.find(person => person.name === newName);
