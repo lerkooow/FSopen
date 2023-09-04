@@ -71,6 +71,15 @@ const App = () => {
       return;
     } else if (newName.length < 3) {
       setErrorMessage(`Person validation failed: name: Path "name" ("${newName}") is shorter than the minimum allowed length (3)`);
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000);
+      return;
+    } else if (!/^\d{2,3}-\d{5,20}$/.test(newNumber)) {
+      setErrorMessage(`The number entered is incorrect, valid options are (8 characters or more, format xx-xxxxxxx... or xxx-xxxxx...)`);
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000);
       return;
     }
 
