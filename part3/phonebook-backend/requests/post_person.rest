@@ -6,4 +6,14 @@ Content-Type: application/json
     "number": "040-1234556"
 }
 
+###
+
+PUT http://localhost:3001/api/persons/64f5ca3bd8eadbe9fe241aa5
+content-type: application/json
+
+{
+    "name": "Lora",
+    "number": 040-1234556
+}
+
 
