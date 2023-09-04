@@ -23,9 +23,16 @@ let persons = [];
 
 
 // GET info
-app.get('/info', (req, res) => {
-    const date = new Date()
-    res.send(`<p>Phonebook has info for ${persons.length} people</p> <p>${date}</p>`)
+app.get("/info", (req, res, error) => {
+    const requestTime = new Date(Date.now())
+
+    Person.find({})
+        .then((persons) => {
+            res.send(
+                `<p>Phonebook has info for ${persons.length} people</p> <p>${requestTime}</p>`
+            )
+        })
+        .catch((error) => next(error))
 })
 
 // GET persons
@@ -36,15 +43,16 @@ app.get("/api/persons", (req, res) => {
 })
 
 // GET persons id с ошибкой, если индекс не найден
-app.get('/api/persons/:id', (req, res, next) => {
-    const id = Number(req.params.id)
-    const person = persons.find(person => person.id === id)
-
-    if (person) {
-        response.json(person)
-    } else {
-        response.status(404).end()
-    }
+app.get("/api/persons/:id", (req, res, next) => {
+    Person.findById(req.params.id)
+        .then((person) => {
+            if (person) {
+                res.json(person)
+            } else {
+                res.status(404).end()
+            }
+        })
+        .catch((error) => next(error))
 })
 
 // DELETE
