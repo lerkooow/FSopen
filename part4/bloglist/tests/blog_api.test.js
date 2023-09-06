@@ -75,11 +75,9 @@ describe('Blog API Tests', () => {
         const response = await api.get('/api/blogs')
 
         expect(response.status).toBe(200)
-        expect(response.body).toHaveLength(0) // Assuming there are no blogs initially
-
+        expect(response.body).toHaveLength(0)
         const blogs = response.body
         if (blogs.length > 0) {
-            // Check the first blog post for the existence of "id"
             const firstBlog = blogs[0]
             expect(firstBlog.id).toBeDefined()
             expect(firstBlog._id).toBeUndefined()
@@ -95,6 +93,29 @@ describe('Blog API Tests', () => {
         const blogs = response.body
         expect(Array.isArray(blogs)).toBe(true)
     })
+})
+
+test('Creating a new blog post', async () => {
+    const newBlog = {
+        title: 'Test Blog',
+        author: 'Test Author',
+        url: 'https://example.com/test',
+        likes: 10,
+    }
+
+    const response = await api.post('/api/blogs').send(newBlog)
+
+    expect(response.status).toBe(201)
+    expect(response.headers['content-type']).toContain('application/json')
+
+    const blogs = await Blog.find({})
+    expect(blogs).toHaveLength(initialBlogs.length + 1)
+
+    const addedBlog = blogs.find((blog) => blog.title === newBlog.title)
+    expect(addedBlog).toBeDefined()
+    expect(addedBlog.author).toBe(newBlog.author)
+    expect(addedBlog.url).toBe(newBlog.url)
+    expect(addedBlog.likes).toBe(newBlog.likes)
 })
 
 describe("total likes", () => {
