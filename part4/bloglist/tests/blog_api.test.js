@@ -159,6 +159,33 @@ test('Creating a new blog post with missing url responds with 400 Bad Request', 
     expect(response.status).toBe(400)
 })
 
+test('Deleting an existing blog post by ID', async () => {
+    const newBlog = {
+        title: 'Test Blog',
+        author: 'Test Author',
+        url: 'https://example.com/test',
+        likes: 10,
+    }
+
+    const creationResponse = await api.post('/api/blogs').send(newBlog)
+
+    const deleteResponse = await api.delete(`/api/blogs/${creationResponse.body.id}`)
+
+    expect(deleteResponse.status).toBe(204)
+
+    const deletedBlog = await Blog.findById(creationResponse.body.id)
+    expect(deletedBlog).toBe(null)
+})
+
+test('Attempting to delete a non-existent blog post by ID', async () => {
+    const nonExistentId = '123456789012345678901234'
+
+    const deleteResponse = await api.delete(`/api/blogs/${nonExistentId}`)
+
+    expect(deleteResponse.status).toBe(404)
+})
+
+
 describe("total likes", () => {
     test("of empty list returns error", () => {
         const result = listHelper.totalLikes([])
