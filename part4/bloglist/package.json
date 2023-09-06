@@ -22,5 +22,9 @@
     "lodash": "^4.17.21",
     "mongodb": "^6.0.0",
     "mongoose": "^7.5.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "globalTeardown": "./tests/teardown.js"
   }
 }

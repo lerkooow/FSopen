@@ -1,5 +1,11 @@
 const listHelper = require("../utils/list_helper")
 
+const supertest = require('supertest')
+const app = require('../app')
+
+const api = supertest(app)
+
+
 const listWithOneBlog = [
     {
         _id: "5a422aa71b54a676234d17f8",
@@ -63,6 +69,18 @@ const blogs = [
         __v: 0,
     },
 ]
+
+describe('Blog API Tests', () => {
+    test('GET request to /api/blogs returns the correct number of blog posts in JSON format', async () => {
+        const response = await api.get('/api/blogs')
+
+        expect(response.status).toBe(200)
+        expect(response.headers['content-type']).toContain('application/json')
+
+        const blogs = response.body
+        expect(Array.isArray(blogs)).toBe(true)
+    })
+})
 
 describe("total likes", () => {
     test("of empty list returns error", () => {
