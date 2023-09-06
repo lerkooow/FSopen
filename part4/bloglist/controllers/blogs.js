@@ -9,11 +9,15 @@ blogsRouter.get('/', async (request, response) => {
 blogsRouter.post('/', async (request, response, next) => {
     const body = request.body
 
+    if (!body.title || !body.url) {
+        return response.status(400).json({ error: 'Title and URL are required' })
+    }
+
     const blog = new Blog({
         title: body.title,
         author: body.author,
         url: body.url,
-        likes: body.likes === undefined ? 0 : body.likes, // Default to 0 if likes is missing
+        likes: body.likes === undefined ? 0 : body.likes,
     })
 
     try {

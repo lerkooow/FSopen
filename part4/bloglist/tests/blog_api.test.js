@@ -135,6 +135,30 @@ test('Creating a new blog post with missing likes defaults to 0', async () => {
     expect(addedBlog.likes).toBe(0)
 })
 
+test('Creating a new blog post with missing title responds with 400 Bad Request', async () => {
+    const newBlog = {
+        author: 'Test Author',
+        url: 'https://example.com/test',
+        likes: 10,
+    }
+
+    const response = await api.post('/api/blogs').send(newBlog)
+
+    expect(response.status).toBe(400)
+})
+
+test('Creating a new blog post with missing url responds with 400 Bad Request', async () => {
+    const newBlog = {
+        title: 'Test Blog',
+        author: 'Test Author',
+        likes: 10,
+    }
+
+    const response = await api.post('/api/blogs').send(newBlog)
+
+    expect(response.status).toBe(400)
+})
+
 describe("total likes", () => {
     test("of empty list returns error", () => {
         const result = listHelper.totalLikes([])
