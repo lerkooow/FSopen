@@ -10,3 +10,19 @@ content-type: application/json
     "author": "Tester Tester",
     "url": "https://test.com"
 }
+
+###
+
+POST http://localhost:3003/api/users
+content-type: application/json
+
+{
+    "username": "m",
+    "name": "Hellas",
+    "password": "LALALALLA"
+
+}
+
+###
+
+GET http://localhost:3003/api/users
