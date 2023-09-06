@@ -71,6 +71,21 @@ const blogs = [
 ]
 
 describe('Blog API Tests', () => {
+    test('Blog posts have "id" property instead of "_id"', async () => {
+        const response = await api.get('/api/blogs')
+
+        expect(response.status).toBe(200)
+        expect(response.body).toHaveLength(0) // Assuming there are no blogs initially
+
+        const blogs = response.body
+        if (blogs.length > 0) {
+            // Check the first blog post for the existence of "id"
+            const firstBlog = blogs[0]
+            expect(firstBlog.id).toBeDefined()
+            expect(firstBlog._id).toBeUndefined()
+        }
+    })
+
     test('GET request to /api/blogs returns the correct number of blog posts in JSON format', async () => {
         const response = await api.get('/api/blogs')
 
