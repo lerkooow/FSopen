@@ -185,6 +185,35 @@ test('Attempting to delete a non-existent blog post by ID', async () => {
     expect(deleteResponse.status).toBe(404)
 })
 
+test('Updating the likes of an existing blog post by ID', async () => {
+    const newBlog = {
+        title: 'Test Blog',
+        author: 'Test Author',
+        url: 'https://example.com/test',
+        likes: 10,
+    }
+
+    const creationResponse = await api.post('/api/blogs').send(newBlog)
+
+    const updatedLikes = 20
+    const updateResponse = await api
+        .put(`/api/blogs/${creationResponse.body.id}`)
+        .send({ likes: updatedLikes })
+
+    expect(updateResponse.status).toBe(200)
+    expect(updateResponse.body.likes).toBe(updatedLikes)
+
+    const updatedBlog = await Blog.findById(creationResponse.body.id)
+    expect(updatedBlog.likes).toBe(updatedLikes)
+})
+
+test('Attempting to update a non-existent blog post by ID', async () => {
+    const nonExistentId = '123456789012345678901234'
+    const updateResponse = await api.put(`/api/blogs/${nonExistentId}`).send({ likes: 5 })
+
+    expect(updateResponse.status).toBe(404)
+})
+
 
 describe("total likes", () => {
     test("of empty list returns error", () => {
