@@ -118,6 +118,23 @@ test('Creating a new blog post', async () => {
     expect(addedBlog.likes).toBe(newBlog.likes)
 })
 
+test('Creating a new blog post with missing likes defaults to 0', async () => {
+    const newBlog = {
+        title: 'Test Blog',
+        author: 'Test Author',
+        url: 'https://example.com/test',
+    }
+
+    const response = await api.post('/api/blogs').send(newBlog)
+
+    expect(response.status).toBe(201)
+    expect(response.headers['content-type']).toContain('application/json')
+
+
+    const addedBlog = await Blog.findById(response.body.id)
+    expect(addedBlog.likes).toBe(0)
+})
+
 describe("total likes", () => {
     test("of empty list returns error", () => {
         const result = listHelper.totalLikes([])
