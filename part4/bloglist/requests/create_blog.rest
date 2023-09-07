@@ -6,9 +6,10 @@ POST http://localhost:3003/api/blogs
 content-type: application/json
 
 {
-    "title": "second test",
-    "author": "Tester Tester",
-    "url": "https://test.com"
+    "url": "https://test1.com",
+    "title": "1test",
+    "author": "1Tester Tester",
+    "user": "Lera"
 }
 
 ###
@@ -17,10 +18,9 @@ POST http://localhost:3003/api/users
 content-type: application/json
 
 {
-    "username": "m",
-    "name": "Hellas",
+    "username": "Lera",
+    "name": "Lera Lera",
     "password": "LALALALLA"
-
 }
 
 ###
