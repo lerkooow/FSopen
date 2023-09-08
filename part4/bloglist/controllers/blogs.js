@@ -1,16 +1,14 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
-const User = require('../models/user'); // Import the User model
+const User = require('../models/user');
 
 
 blogsRouter.get('/', async (request, response) => {
-    try {
-        const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 });
+    const blogs = await Blog
+        .find({})
+        .populate('user', { username: 1, name: 1 });
 
-        response.json(blogs);
-    } catch (error) {
-        response.status(500).json({ error: 'Internal server error' });
-    }
+    response.json(blogs);
 });
 
 blogsRouter.post('/', async (request, response, next) => {
@@ -31,13 +29,12 @@ blogsRouter.post('/', async (request, response, next) => {
             title: body.title,
             author: body.author,
             url: body.url,
-            user: user._id, // Связываем блог с пользователем
+            user: user._id,
             likes: body.likes === undefined ? 0 : body.likes,
         });
 
         const savedBlog = await blog.save();
 
-        // Добавляем блог к списку блогов пользователя
         user.blogs = user.blogs.concat(savedBlog._id);
         await user.save();
 

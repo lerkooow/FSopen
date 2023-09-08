@@ -12,29 +12,17 @@ usersRouter.get('/', async (request, response) => {
     }
 });
 
-
-
 usersRouter.post('/', async (request, response) => {
-    const body = request.body;
-
-    if (!body.username) {
-        return response.status(400).json({ error: 'Username are required.' });
-    }
-
-    const existingUser = await User.findOne({ username: body.username });
-
-    if (existingUser) {
-        return response.status(400).json({ error: 'Username already exists.' });
-    }
+    const { username, name, password } = request.body
 
 
     const saltRounds = 10;
-    const password = await bcrypt.hash(body.password, saltRounds);
+    const passwordHash = await bcrypt.hash(password, saltRounds);
 
     const user = new User({
-        username: body.username,
-        name: body.name,
-        password,
+        username,
+        name,
+        passwordHash,
     });
 
     const savedUser = await user.save();

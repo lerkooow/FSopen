@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
-const app = require('../app') // Import your Express app
-const User = require('../models/user') // Import your User model
+const app = require('../app')
+const User = require('../models/user')
 
 const api = supertest(app)
 
@@ -19,7 +19,7 @@ describe('User API Tests', () => {
 
         const response = await api.post('/api/users').send(newUser)
 
-        expect(response.status).toBe(201) // Expect a successful creation status code (201)
+        expect(response.status).toBe(201)
         expect(response.body.username).toBe(newUser.username)
 
         const users = await User.find({})
@@ -27,7 +27,6 @@ describe('User API Tests', () => {
     })
 
     test('Retrieving user details', async () => {
-        // Create some test users in the database
         const testUsers = [
             {
                 username: 'user1',
@@ -44,8 +43,8 @@ describe('User API Tests', () => {
 
         const response = await api.get('/api/users')
 
-        expect(response.status).toBe(200) // Expect a successful request status code (200)
+        expect(response.status).toBe(200)
         expect(response.body).toHaveLength(testUsers.length)
-        expect(response.body[0].passwordHash).toBeUndefined() // Ensure passwordHash is not included
+        expect(response.body[0].passwordHash).toBeUndefined()
     })
 })
