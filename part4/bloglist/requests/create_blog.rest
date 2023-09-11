@@ -8,9 +8,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ikxvc
 
 {
     "url": "https://test2.com",
-    "title": "2e33test",
-    "author": "2Tester Tester",
-    "user": "Lora4"
+    "title": "Microservices and the First Law of Distributed Objects ",
+    "author": "Martin Fowler",
+    "user": "hellas"
 }
 
 ###
@@ -19,9 +19,9 @@ POST http://localhost:3003/api/users
 content-type: application/json
 
 {
-    "username": "Lora5",
-    "name": "Lora4 Lora4",
-    "password": "123456"
+    "username": "hellas",
+    "name": "Arto Hellas",
+    "password": "12345"
 }
 
 ###

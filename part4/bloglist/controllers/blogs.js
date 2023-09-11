@@ -24,17 +24,17 @@ blogsRouter.post('/', async (request, response, next) => {
     const body = request.body;
 
     const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+    console.log("🚀 ~ file: blogs.js:27 ~ blogsRouter.post ~ decodedToken:", decodedToken)
     if (!decodedToken.id) {
         return response.status(401).json({ error: 'token invalid' })
     }
-    const users = await User.findById(decodedToken.id)
+    const user = await User.findById(decodedToken.id)
 
-    if (!body.title || !body.url || !body.user) {
-        return response.status(400).json({ error: 'Title, URL, and User are required' });
+    if (!body.title || !body.url || !body.author) {
+        return response.status(400).json({ error: 'Title, URL, and Author are required' });
     }
 
     try {
-        const user = await User.findOne({ username: body.user });
 
         if (!user) {
             return response.status(400).json({ error: 'User not found' });
