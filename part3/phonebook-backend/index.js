@@ -57,7 +57,7 @@ app.get("/api/persons/:id", (req, res, next) => {
 // DELETE
 app.delete('/api/persons/:id', (req, res, next) => {
     Person.findByIdAndRemove(req.params.id)
-        .then(result => {
+        .then(res => {
             res.status(204).end()
         })
         .catch(error => next(error))
@@ -124,6 +124,12 @@ const errorHandler = (error, req, res, next) => {
 
     next(error)
 }
+
+if (process.env.NODE_ENV === 'test') {
+    const testingRouter = require('./controllers/testing')
+    app.use('/api/testing', testingRouter)
+}
+
 
 const PORT = process.env.PORT
 
